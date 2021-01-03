@@ -24,9 +24,9 @@ aws opsworks --region us-east-1 create-instance --stack-id 935450cc-61e0-4b03-a3
 ```
 sudo snap install microk8s --classic
 ```
-Включение службы dns, службы [мониторинга prometheus](https://github.com/prometheus-operator/prometheus-operator), [службы для создания балансировщиков нагрузки](https://metallb.universe.tf/usage/) 
+Включение службы dns, службы [мониторинга prometheus](https://github.com/prometheus-operator/prometheus-operator), [службы для создания балансировщиков нагрузки](https://metallb.universe.tf/usage/), пакетный менаджер helm, дополненние storage (позволяет использовать и создавать ресурсы для хранилища)
 ```
-microk8s enable dns prometheus metallb
+microk8s enable dns prometheus metallb helm3 storage
 ```
 Для установки cassandra в кластер будем использовать helm и подготовленный helm-chart https://github.com/bitnami/charts/tree/master/bitnami/cassandra
 Параметры, которые нам надо поменять для установки:
@@ -37,3 +37,8 @@ microk8s enable dns prometheus metallb
 - metrics.serviceMonitor.namespace = monitoring (пространство имен для системы мониторинга)
 - metrics.serviceMonitor.enabled = true (включаем ServiceMonitoring для сервисов касандры)
 - service.type = LoadBalancer (тип сервиса - балансировщик награзки)
+
+Устанавливаем cassandra:
+```
+helm install cassandra --namespace=default --values=hw2/cassandra-helm-values.yaml bitnami/cassandra
+```
