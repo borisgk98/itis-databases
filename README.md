@@ -19,7 +19,7 @@ aws opsworks --region us-east-1 create-instance --stack-id 935450cc-61e0-4b03-a3
 ```
 3. Проверка связи с помощью команды `ping`
 
-Далее для разворачивания cassandra и системы мониторинга я использовал кластер на основе microk8s на базе Ubuntu.
+Далее для разворачивания cassandra и системы мониторинга я использовал кластер на основе [microk8s](https://microk8s.io/) на базе Ubuntu.
 Установка
 ```
 sudo snap install microk8s --classic
