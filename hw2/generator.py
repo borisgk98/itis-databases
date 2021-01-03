@@ -10,8 +10,9 @@ session.set_keyspace('test')
 
 insert = session.prepare("insert into test.TEST(id, name) values (?, ?)")
 
-n = 10**6
-for id in range(1, n + 1):
+n = 10**4
+k = 10**6
+for id in range(1 + k, k + n + 1):
     session.execute(insert, [id, get_full_name()])
 
 sys.exit(0)

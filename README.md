@@ -69,3 +69,15 @@ kubectl exec -it cassandra-2 -- nodetool cfstats test.test | grep "Write Count"
 ```
 Для создания графика я использовал matplotlib. [Исходный код](https://github.com/borisgk98/itis-databases/blob/main/hw2/histogram.py)
 ![Разпределение данных по узлам](https://github.com/borisgk98/itis-databases/blob/main/hw2/histogram.png)
+
+## Задание 3
+#### 1-2.
+В задание 2 мы уже настроили prometheus operator для сбора метрик
+#### 3.
+Тут нужно настроить графики в графане.
+Для соединения с графаной используем следующую команду:
+```
+kubectl -n monitoring port-forward grafana-7c9bc466d8-lbgr9 3000:3000
+```
+После настройки графиков ([сам дашборд для кассандры](https://github.com/borisgk98/itis-databases/blob/main/hw3/cassandra-dashboard.json))) получаем следующую картину:
+![График](https://github.com/borisgk98/itis-databases/blob/main/hw3/grafana.png)
