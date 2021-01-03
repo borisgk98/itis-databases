@@ -1,0 +1,25 @@
+# Настройка хранилища для кластера
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: metallb-system
+  name: config
+data:
+  config: |
+    peers:
+    - peer-address: 10.0.0.1
+      peer-asn: 64501
+      my-asn: 64500
+    # Rest of config omitted for brevity
+    address-pools:
+    - name: cheap
+      protocol: bgp
+      addresses:
+      - 192.168.2.166/32
+    - name: expensive
+      protocol: bgp
+      addresses:
+      - 78.138.173.120/32
+      auto-assign: false
+    bgp-communities:
+      no-advertise: 65535:65282
