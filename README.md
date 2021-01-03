@@ -61,7 +61,7 @@ CREATE TABLE test.TEST (
     name text
 );
 ```
-Программа для заполненния: [hw2/](https://github.com/borisgk98/itis-databases/blob/main/hw2/generator.py)
+Программа для заполненния: [hw2/generator.py](https://github.com/borisgk98/itis-databases/blob/main/hw2/generator.py)
 #### 8.
 Для определения количества записей на каждом узле я использовал nodetool
 ```
