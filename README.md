@@ -63,7 +63,7 @@ CREATE TABLE test.TEST (
 ```
 Программа для заполненния: [hw2/generator.py](https://github.com/borisgk98/itis-databases/blob/main/hw2/generator.py)
 #### 8.
-Для определения количества записей на каждом узле я использовал nodetool
+Для определения количества записей на каждом узле используем nodetool
 ```
 kubectl exec -it cassandra-2 -- nodetool cfstats test.test | grep "Write Count"
 ```
@@ -72,7 +72,7 @@ kubectl exec -it cassandra-2 -- nodetool cfstats test.test | grep "Write Count"
 
 ## Задание 3
 #### 1-2.
-В задание 2 мы уже настроили prometheus operator для сбора метрик
+В задание 2 уже настроен prometheus operator для сбора метрик
 #### 3.
 Тут нужно настроить графики в графане.
 Для соединения с графаной используем следующую команду:
@@ -81,3 +81,63 @@ kubectl -n monitoring port-forward grafana-7c9bc466d8-lbgr9 3000:3000
 ```
 После настройки графиков ([сам дашборд для кассандры](https://github.com/borisgk98/itis-databases/blob/main/hw3/cassandra-dashboard.json))) получаем следующую картину:
 ![График](https://github.com/borisgk98/itis-databases/blob/main/hw3/grafana.png)
+
+## Задание 5
+#### 1.
+Используем генератор из первого задания
+#### 2.
+#### 3. 
+Тут сложнее так как в качетсве среды мы используем kubernetes. При запуске инстанса касандры создается один особый процесс с PID=1, SIGKILL данного процесса приводит к заверешение работы узла ПОЛНОСТЬЮ и перезапуску его контроллером репликации. Поэтому для симуляции завершения работы узла я использовал следующий код:
+```
+while true; do kubectl delete pod cassandra-0; sleep 1; done
+```
+
+Для доступа к конкретному узлу касандры используется следующая команда:
+```
+kubectl exec -it cassandra-1 -- /bin/bash
+```
+
+#### 4.
+
+Проверяем статус касандры до отключения:
+```
+@cassandra-1:/$ nodetool status
+Datacenter: datacenter1
+=======================
+Status=Up/Down
+|/ State=Normal/Leaving/Joining/Moving
+--  Address       Load       Tokens       Owns (effective)  Host ID                               Rack
+UN  10.1.220.201  4.45 MiB   256          32.9%             af740fc7-eb2b-4499-8c2d-d3d6f15ad367  rack1
+UN  10.1.220.203  4.62 MiB   256          33.4%             233c5e9b-46ff-4a2d-a49d-df20201b089b  rack1
+UN  10.1.220.205  5.39 MiB   256          33.7%             ab44539b-cf42-4886-9572-fa2bb65363e1  rack1
+```
+
+Проверяем статус касандры после отключения:
+```
+@cassandra-2:/$ nodetool status
+Datacenter: datacenter1
+=======================
+Status=Up/Down
+|/ State=Normal/Leaving/Joining/Moving
+--  Address       Load       Tokens       Owns (effective)  Host ID                               Rack
+DN  10.1.220.209  6.81 MiB   256          33.4%             233c5e9b-46ff-4a2d-a49d-df20201b089b  rack1
+UN  10.1.220.212  6.63 MiB   256          32.9%             af740fc7-eb2b-4499-8c2d-d3d6f15ad367  rack1
+UN  10.1.220.216  6.8 MiB    256          33.7%             ab44539b-cf42-4886-9572-fa2bb65363e1  rack1
+```
+
+![График после отключения узла](https://github.com/borisgk98/itis-databases/blob/main/hw5/cassandra-dashboard-node-off.png)
+
+Проверяем статус касандры после включения:
+```
+@cassandra-2:/$ nodetool status
+Datacenter: datacenter1
+=======================
+Status=Up/Down
+|/ State=Normal/Leaving/Joining/Moving
+--  Address       Load       Tokens       Owns (effective)  Host ID                               Rack
+UN  10.1.220.225  7.62 MiB   256          33.4%             233c5e9b-46ff-4a2d-a49d-df20201b089b  rack1
+UN  10.1.220.212  6.62 MiB   256          32.9%             af740fc7-eb2b-4499-8c2d-d3d6f15ad367  rack1
+UN  10.1.220.216  6.8 MiB    256          33.7%             ab44539b-cf42-4886-9572-fa2bb65363e1  rack1
+```
+
+![График после включения узла](https://github.com/borisgk98/itis-databases/blob/main/hw5/cassandra-dashboard-node-on.png)
