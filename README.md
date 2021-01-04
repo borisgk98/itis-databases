@@ -143,7 +143,9 @@ UN  10.1.220.216  6.8 MiB    256          33.7%             ab44539b-cf42-4886-9
 ![График после включения узла](https://github.com/borisgk98/itis-databases/blob/main/hw5/cassandra-dashboard-node-on.png)
 
 ## Задание 6
-В качестве LoadBalancer в моем решении используется [MetalLB](https://github.com/metallb/metallb). Настройка данного решения происходила в первом задании.
+В качестве LoadBalancer в моем решении используется [MetalLB](https://github.com/metallb/metallb). Настройка данного решения происходила во втором задании.
+[Файл конфигурации](https://github.com/borisgk98/itis-databases/blob/main/hw2/config.yaml)
+
 На графике ниже видно распределение входящего трафика на узлы касандры.
 
 ![График трафика](https://github.com/borisgk98/itis-databases/blob/main/hw6/lb.png)
