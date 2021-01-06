@@ -82,6 +82,15 @@ kubectl -n monitoring port-forward grafana-7c9bc466d8-lbgr9 3000:3000
 После настройки графиков ([сам дашборд для кассандры](https://github.com/borisgk98/itis-databases/blob/main/hw3/cassandra-dashboard.json))) получаем следующую картину:
 ![График](https://github.com/borisgk98/itis-databases/blob/main/hw3/grafana.png)
 
+## Задание 4
+В данный момент узлы касандры имеют следующие внутрекластерные адреса:
+| Pod name    | Cluster IP   | 
+|-------------|--------------| 
+| cassandra-0 | 10.1.220.243 | 
+| cassandra-1 | 10.1.220.212 | 
+| cassandra-2 | 10.1.220.216 | 
+
+
 ## Задание 5
 #### 1.
 Используем генератор из первого задания
