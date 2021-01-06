@@ -90,6 +90,39 @@ kubectl -n monitoring port-forward grafana-7c9bc466d8-lbgr9 3000:3000
 | cassandra-1 | 10.1.220.212 | 
 | cassandra-2 | 10.1.220.216 | 
 
+#### 1.
+```sql
+CREATE KEYSPACE hw4 WITH REPLICATION = {
+    'class' : 'SimpleStrategy',
+    'replication_factor' : 2
+    };
+
+CREATE TABLE hw4.empl
+(
+    ID        int,
+    DEPT_NAME varchar,
+    NAME      text,
+    primary key ((ID), DEPT_NAME)
+);
+```
+
+#### 2.
+[Генаратор](https://github.com/borisgk98/itis-databases/blob/main/hw4/generator.py)
+
+#### 3.
+[Запрос 1 и tracing для него](https://github.com/borisgk98/itis-databases/blob/main/hw4/tracing1.md)
+
+[Запрос 2 и tracing для него](https://github.com/borisgk98/itis-databases/blob/main/hw4/tracing2.md)
+
+#### 4.
+```sql
+CREATE MATERIALIZED VIEW hw4.empl_mv
+AS
+SELECT * FROM hw4.empl
+WHERE name IS NOT NULL AND id IS NOT NULL AND dept_name IS NOT NULL
+PRIMARY KEY ( name, id, dept_name );
+```
+[Запрос 3 и tracing для него](https://github.com/borisgk98/itis-databases/blob/main/hw4/tracing3.md)
 
 ## Задание 5
 #### 1.
