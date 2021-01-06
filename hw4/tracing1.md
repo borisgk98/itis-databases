@@ -1,5 +1,5 @@
 query:
-```sql
+```cassandraql
 SELECT *
     FROM hw4.empl
  WHERE ID = 10000 AND DEPT_NAME = 'HR';
