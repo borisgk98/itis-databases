@@ -191,3 +191,57 @@ UN  10.1.220.216  6.8 MiB    256          33.7%             ab44539b-cf42-4886-9
 На графике ниже видно распределение входящего трафика на узлы касандры.
 
 ![График трафика](https://github.com/borisgk98/itis-databases/blob/main/hw6/lb.png)
+
+## Задание 7
+#### 1.
+Для развертывания кластера я использовал [официальный helm-chart neo4j](https://github.com/neo4j-contrib/neo4j-helm). 
+Устанавливается кластер neo4j (3 узла по умолчанию) следующей коммандой:
+```
+helm install neo4j https://github.com/neo4j-contrib/neo4j-helm/releases/download/4.2.0-1/neo4j-4.2.0-1.tgz --set acceptLicenseAgreement=yes --set neo4jPassword=neopass
+```
+Так же для доступа через балансировщик нагрузки я настроил сервис типа LoadBalancer 
+([neo4j-lb.yaml](https://github.com/borisgk98/itis-databases/blob/main/hw7/neo4j-lb.yaml))
+
+Подключение к ведущей ноде:
+```
+kubectl port-forward neo4j-neo4j-core-1 7687:7687
+```
+#### 2.
+Создание вершин:
+```
+MERGE (a:Loc {name:'A'})
+MERGE (b:Loc {name:'B'})
+MERGE (c:Loc {name:'C'})
+MERGE (d:Loc {name:'D'})
+MERGE (e:Loc {name:'E'})
+MERGE (f:Loc {name:'F'})
+```
+Создание ребер:
+```
+MERGE (a)-[:ROAD {cost:50}]->(b)
+MERGE (a)-[:ROAD {cost:50}]->(c)
+MERGE (a)-[:ROAD {cost:100}]->(d)
+MERGE (b)-[:ROAD {cost:40}]->(d)
+MERGE (c)-[:ROAD {cost:40}]->(d)
+MERGE (c)-[:ROAD {cost:80}]->(e)
+MERGE (d)-[:ROAD {cost:30}]->(e)
+MERGE (d)-[:ROAD {cost:80}]->(f)
+MERGE (e)-[:ROAD {cost:40}]->(f);
+```
+Расчет кратчайшего пути с помощью алгоритма Дейкстры:
+```
+MATCH (start:Loc{name:'A'}), (end:Loc{name:'F'})
+CALL apoc.algo.dijkstra(start, end, 'ROAD', 'cost')
+yield path as path, weight as weight
+RETURN path, weight
+```
+Удаление ребер:
+```
+MATCH ()-[r:ROAD]->()
+DELETE r;
+```
+Удаление вершин
+```
+MATCH (l:Loc)
+DELETE l;
+```
